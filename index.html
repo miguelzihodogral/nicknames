@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rockstar Nickname Generator</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1a1a1a;
+            --accent-yellow: #ffb400;
+            --button-orange: #f39c12;
+            --text-white: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-white);
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-yellow);
+            box-shadow: 0 0 20px rgba(255, 180, 0, 0.2);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--accent-yellow);
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #nickname-display {
+            background-color: #000;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #nickname-display:hover {
+            background-color: #111;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 60%;
+            height: 100%;
+            background-color: #3498db;
+        }
+
+        button {
+            background-color: var(--button-orange);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.98);
+            background-color: #e67e22;
+        }
+
+        .footer-info {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rockstar Nickname</h1>
+        
+        <div id="nickname-display" title="Clique para copiar">Axel Furybreaker</div>
+
+        <div class="progress-container">
+            <div class="progress-bar"></div>
+        </div>
+
+        <button onclick="generateAndCopy()">Generate & Copy</button>
+
+        <div class="footer-info">
+            <span>+ Suggest a Name</span>
+            <span style="color: var(--accent-yellow); font-weight: bold;">ROCKSTAR★</span>
+        </div>
+    </div>
+
+    <script>
+        const prefixos = ["Slash", "Axel", "Riff", "Neo", "Viper", "Zack", "Iggy", "Rex", "Jett", "Ozzy", "Blaze", "Shadow"];
+        const nomes = ["Fury", "Thunder", "Storm", "Electric", "Metal", "Venom", "Chrome", "Sonic", "Wild", "Night"];
+        const sufixos = ["breaker", "star", "heart", "rider", "vibe", "soul", "strike", "head", "king", "born"];
+
+        const display = document.getElementById('nickname-display');
+
+        function generateNickname() {
+            const p = prefixos[Math.floor(Math.random() * prefixos.length)];
+            const n = nomes[Math.floor(Math.random() * nomes.length)];
+            const s = sufixos[Math.floor(Math.random() * sufixos.length)];
+            
+            // Adiciona um número aleatório curto para garantir que seja "impossível estar indisponível"
+            const randomNum = Math.floor(Math.random() * 99);
+            
+            return `${p} ${n}${s}_${randomNum}`;
+        }
+
+        function copyToClipboard(text) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+            // Sem alertas aqui para ser mais rápido
+        }
+
+        function generateAndCopy() {
+            const newNick = generateNickname();
+            display.innerText = newNick;
+            copyToClipboard(newNick);
+        }
+
+        // Permite copiar clicando no próprio nome também
+        display.onclick = () => {
+            copyToClipboard(display.innerText);
+        };
+    </script>
+
+</body>
+</html>
