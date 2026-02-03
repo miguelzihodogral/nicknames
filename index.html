@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rockstar Nickname Generator</title>
+    <title>Rockstar Nickname Gen</title>
     <style>
         :root {
-            --bg-color: #121212;
+            --bg-color: #0e0e0e;
             --card-bg: #1a1a1a;
             --accent-yellow: #ffb400;
             --button-orange: #f39c12;
@@ -15,91 +15,92 @@
 
         body {
             margin: 0;
-            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             background-color: var(--bg-color);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             color: var(--text-white);
         }
 
         .container {
             background-color: var(--card-bg);
-            padding: 40px;
+            padding: 35px;
             border-radius: 12px;
             border: 2px solid var(--accent-yellow);
-            box-shadow: 0 0 20px rgba(255, 180, 0, 0.2);
-            width: 400px;
+            box-shadow: 0 0 25px rgba(255, 180, 0, 0.2);
+            width: 380px;
             text-align: center;
         }
 
         h1 {
             color: var(--accent-yellow);
-            font-size: 24px;
-            margin-bottom: 30px;
+            font-size: 22px;
+            margin-bottom: 25px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         #nickname-display {
             background-color: #000;
-            padding: 15px;
+            padding: 18px;
             border-radius: 6px;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             margin-bottom: 20px;
             border: 1px solid #333;
             cursor: pointer;
-            transition: background 0.3s;
+            letter-spacing: 1px;
         }
 
-        #nickname-display:hover {
-            background-color: #111;
+        .range-container {
+            margin-bottom: 25px;
+            text-align: left;
         }
 
-        .progress-container {
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #aaa;
+        }
+
+        input[type="range"] {
             width: 100%;
-            height: 8px;
-            background-color: #333;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            overflow: hidden;
+            cursor: pointer;
+            accent-color: var(--accent-yellow);
         }
 
-        .progress-bar {
-            width: 60%;
-            height: 100%;
-            background-color: #3498db;
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--accent-yellow);
+            margin-top: 5px;
         }
 
         button {
             background-color: var(--button-orange);
             color: #000;
             border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 800;
             text-transform: uppercase;
             border-radius: 6px;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.1s, background 0.2s;
+            transition: 0.2s;
         }
 
-        button:active {
-            transform: scale(0.98);
-            background-color: #e67e22;
-        }
+        button:active { transform: scale(0.97); }
 
         .footer-info {
             margin-top: 20px;
-            font-size: 12px;
-            color: #888;
+            font-size: 11px;
+            color: #555;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
     </style>
 </head>
@@ -108,36 +109,66 @@
     <div class="container">
         <h1>Rockstar Nickname</h1>
         
-        <div id="nickname-display" title="Clique para copiar">Axel Furybreaker</div>
+        <div id="nickname-display" onclick="copyOnly()">CLIQUE ABAIXO</div>
 
-        <div class="progress-container">
-            <div class="progress-bar"></div>
+        <div class="range-container">
+            <label>TAMANHO DO NICK (6 - 16 CARACTERES)</label>
+            <input type="range" id="len-slider" min="6" max="16" value="10" oninput="updateVal(this.value)">
+            <div class="range-values">
+                <span>Mín: 6</span>
+                <span id="current-val">10</span>
+                <span>Máx: 16</span>
+            </div>
         </div>
 
         <button onclick="generateAndCopy()">Generate & Copy</button>
 
         <div class="footer-info">
-            <span>+ Suggest a Name</span>
-            <span style="color: var(--accent-yellow); font-weight: bold;">ROCKSTAR★</span>
+            <span>NO SPACES • NO SPECIALS</span>
+            <span style="color: var(--accent-yellow);">ID: 1418754344</span>
         </div>
     </div>
 
     <script>
-        const prefixos = ["Slash", "Axel", "Riff", "Neo", "Viper", "Zack", "Iggy", "Rex", "Jett", "Ozzy", "Blaze", "Shadow"];
-        const nomes = ["Fury", "Thunder", "Storm", "Electric", "Metal", "Venom", "Chrome", "Sonic", "Wild", "Night"];
-        const sufixos = ["breaker", "star", "heart", "rider", "vibe", "soul", "strike", "head", "king", "born"];
-
         const display = document.getElementById('nickname-display');
+        const slider = document.getElementById('len-slider');
+        const valLabel = document.getElementById('current-val');
 
-        function generateNickname() {
-            const p = prefixos[Math.floor(Math.random() * prefixos.length)];
-            const n = nomes[Math.floor(Math.random() * nomes.length)];
-            const s = sufixos[Math.floor(Math.random() * sufixos.length)];
-            
-            // Adiciona um número aleatório curto para garantir que seja "impossível estar indisponível"
-            const randomNum = Math.floor(Math.random() * 99);
-            
-            return `${p} ${n}${s}_${randomNum}`;
+        // Listas de Rock
+        const p1 = ["Dark", "Kill", "Rock", "Dead", "Wild", "Fast", "Hard", "Cold", "Neon", "Grim", "Iron", "Acid", "Zero", "Vile", "Pure", "Wolf", "Road", "Mega", "Soul", "Hell"];
+        const p2 = ["Star", "Rider", "Soul", "Fire", "Wolf", "Bolt", "Edge", "Vibe", "Punk", "Zone", "Shot", "Guns", "Metal", "Core", "King", "Lord", "Fury", "Ace", "Flow", "Rush"];
+
+        function updateVal(v) {
+            valLabel.innerText = v;
+        }
+
+        function generateNickname(targetLen) {
+            let nick = "";
+            const usedNicks = JSON.parse(localStorage.getItem('used_nicks') || "[]");
+
+            // Tenta gerar um nick único 50 vezes
+            for(let i = 0; i < 50; i++) {
+                let part1 = p1[Math.floor(Math.random() * p1.length)];
+                let part2 = p2[Math.floor(Math.random() * p2.length)];
+                let combined = part1 + part2;
+
+                // Ajusta tamanho com números se necessário
+                if (combined.length > targetLen) {
+                    combined = combined.substring(0, targetLen);
+                } else if (combined.length < targetLen) {
+                    const diff = targetLen - combined.length;
+                    const randNum = Math.floor(Math.random() * Math.pow(10, diff)).toString().padStart(diff, '0');
+                    combined += randNum;
+                }
+
+                if (!usedNicks.includes(combined)) {
+                    usedNicks.push(combined);
+                    localStorage.setItem('used_nicks', JSON.stringify(usedNicks));
+                    return combined;
+                }
+            }
+            // Fallback caso as combinações acabem (improvável)
+            return "User" + Math.random().toString().substring(2, targetLen + 2);
         }
 
         function copyToClipboard(text) {
@@ -147,20 +178,20 @@
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-            // Sem alertas aqui para ser mais rápido
         }
 
         function generateAndCopy() {
-            const newNick = generateNickname();
-            display.innerText = newNick;
-            copyToClipboard(newNick);
+            const target = parseInt(slider.value);
+            const nick = generateNickname(target);
+            display.innerText = nick;
+            copyToClipboard(nick);
         }
 
-        // Permite copiar clicando no próprio nome também
-        display.onclick = () => {
-            copyToClipboard(display.innerText);
-        };
+        function copyOnly() {
+            if(display.innerText !== "CLIQUE ABAIXO") {
+                copyToClipboard(display.innerText);
+            }
+        }
     </script>
-
 </body>
 </html>
